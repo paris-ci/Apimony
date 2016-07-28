@@ -1,0 +1,70 @@
+# -*- coding:Utf-8 -*-
+"""
+!!! RENNOMEZ CE FICHIER EN config.py !!!
+"""
+from __future__ import unicode_literals
+import dialog; d = dialog.Dialog()
+
+## MODIFIER A PARTIR DE CETTE LIGNE ##
+useConfig = False
+
+conf = {
+"global" : {
+    "user": "**USERNAME**",
+    "pass": "**APIKEY**"
+},
+"auto-renew" : {
+    "blacklistServers": ["108", "3091"],
+    "coupon": "",
+    "duration": "3"
+
+}
+}
+
+## NE PAS TOUCHER APRES CETTE LIGNE ##
+def get(var, domain="global", message = None, defaut=None):
+    """
+    Récupere le contenu de la variable depuis la config ou la demande à l'utilisateur.
+    :param var: Nom de la variable à récupérer
+    :param domain: Domaine dans la configuration
+    :param defaut: Valeur par defaut si l'utilisateur n'etre rien
+    :param message: Message à afficher pour demander le contenu de la variable
+    :return: value
+    """
+
+    if useConfig:
+        try:
+            return conf[domain][var]
+        except KeyError:
+            pass
+        except ValueError:
+            pass
+
+    exit = False
+    while not exit:
+        if message:
+            question = message
+        else:
+            question = "Veuillez entrer une valeur pour " + var
+        if defaut:
+            question += " (" + str(defaut) +") >"
+            val = d.inputbox(question, init=str(defaut))
+        else:
+            code, val = d.inputbox(question)
+
+        return val
+
+
+
+def convert(value, type_):
+    import importlib
+    try:
+        # Check if it's a builtin type
+        module = importlib.import_module('__builtin__')
+        cls = getattr(module, type_)
+    except AttributeError:
+        # if not, separate module and class
+        module, type_ = type_.rsplit(".", 1)
+        module = importlib.import_module(module)
+        cls = getattr(module, type_)
+    return cls(value)
