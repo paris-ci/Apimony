@@ -54,17 +54,3 @@ def get(var, domain="global", message = None, defaut=None):
 
         return val
 
-
-
-def convert(value, type_):
-    import importlib
-    try:
-        # Check if it's a builtin type
-        module = importlib.import_module('__builtin__')
-        cls = getattr(module, type_)
-    except AttributeError:
-        # if not, separate module and class
-        module, type_ = type_.rsplit(".", 1)
-        module = importlib.import_module(module)
-        cls = getattr(module, type_)
-    return cls(value)
