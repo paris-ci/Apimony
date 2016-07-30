@@ -5,6 +5,8 @@ renew-servers -- util
 MODULE DESC 
 """
 # Constants #
+from __future__ import unicode_literals
+
 import re
 import time
 import webbrowser
@@ -18,7 +20,6 @@ __licence__ = "WTFPL — 2016"
 
 api = HarmonAPy(config.get("user", message="Entrez votre nom d'utilisateur"), config.get("pass", message="Entrez votre cle d'API"), ssl=False)
 d = dialog.Dialog()
-
 
 
 def billInfo(tag, bills_dict):
@@ -89,7 +90,7 @@ def serverPref(veid):
                 d.msgbox("Demande de redemarrage envoyee : " + str(api.post("/servers/{veid}/reboot".format(**{"veid": veid}))))
             elif tag == "(4)":
                 code, password = d.passwordbox(
-                    "Entrez un mot de passe de plus de 8 caracteres, contenant AU MINIMUM 1 lettre majuscule, une lettre minuscule, et un chiffre")
+                    "Entrez un mot de passe de plus de 8 caracteres, contenant AU MINIMUM une lettre majuscule, une lettre minuscule, et un chiffre")
                 if code != d.OK:
                     d.msgbox("Changement de mot de passe annule")
                 elif re.match("^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?!.*\s).{8,}$", password):
@@ -264,10 +265,10 @@ def reinstallServer(veid):
             return False
         elif re.match("^(?=.*?[A-Z])(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?!.*\s).{8,}$", password):
             d.gauge_update(50, text="Reinstallation en cours... Ca peut prendre un petit bout de temps, veuillez patienter.", update_text=True)
-            api.post("/servers/{veid}/reinstall".format(**{"veid": veid}), {"password": password, "template": template})
+            rep = api.post("/servers/{veid}/reinstall".format(**{"veid": veid}), {"password": password, "template": template})
             d.gauge_update(100, text="Finalisation", update_text=True)
             time.sleep(.5)
-            d.msgbox("Réinstallation terminee")
+            d.msgbox("Reinstallation terminee : " + str(rep))
             return True
         else:
             d.msgbox("Mot de passe incorrect.")

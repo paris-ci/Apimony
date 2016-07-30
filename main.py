@@ -132,8 +132,12 @@ def showServers():
     servers_parsed = []
     servers_dict = {}
     i = 0
+    total = {"ram": 0, "disk": 0, "cpu": 0}
+    used = {"ram": 0, "disk": 0}
+
     for server in servers:
         servers_dict.update({server: api.get("/servers/" + str(server))})
+        servers_dict[server].update(api.get("/servers/" + str(server) + "/stats"))
         i += 1
 
         pourcentage = int((i / float(len(servers))) * 100)
@@ -143,20 +147,32 @@ def showServers():
             intitule = "VERR " + servers_dict[server]["dns"]
         else:
             intitule = servers_dict[server]["dns"]
-        servers_parsed += [(str(server), intitule)]
+            servers_parsed += [(str(server), intitule)]
+            total["ram"] += servers_dict[server]["memory"]["total"]
+            used["ram"] += servers_dict[server]["memory"]["used"]
+            total["disk"] += servers_dict[server]["disk"]["total"]
+            used["disk"] += servers_dict[server]["disk"]["used"]
+            total["cpu"] += servers_dict[server]["plan"]["cores"]
+
+    servers_parsed += [("Statistiques", "Voir les statistiques globales")]
 
     exit_code = d.gauge_stop()
     exit_ = False
     while not exit_:
-        code, tag = d.menu("Liste des serveurs :", choices=servers_parsed)
+        code, tag = d.menu("Liste des serveurs :", choices=servers_parsed, width=90, menu_height=20)
         if code != d.OK:
             exit_ = True
         else:
-            tag = int(tag)
-
-            if serverInfo(tag, servers_dict):
-                return
-
+            if str(tag).isdigit():
+                tag = int(tag)
+                if serverInfo(tag, servers_dict):
+                    return
+            else:
+                d.msgbox("Utilisation RAM totale   : {used_ram} MB/{total_ram} MB\n"
+                         "Utilisation disque total : {used_disk} GB/{total_disk} GB\n"
+                         "Disponibilitee CPU : {cpu_cores} vcores".format(**{"used_ram" : used["ram"], "total_ram" : total["ram"],
+                                                                              "used_disk" : used["disk"], "total_disk" : total["disk"],
+                                                                              "cpu_cores": total["cpu"]}), width=90, height=10)
 
 try:
     if __name__ == '__main__':
