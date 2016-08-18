@@ -1,5 +1,5 @@
 # Apimony
-Le programme de référence utilisant l'api HarmonAPy d'Akwarioum afin de gerer vos serveurs sur Harmony Hosting
+Le programme de référence utilisant l'API HarmonAPy d'Akwaryoum afin de gérer vos serveurs sur Harmony Hosting.
 
 # Ca fait quoi ?
-Ce projet utilise les fonctions de l'api d'harmony hosting afin de vous permettre de gerer vos serveurs depuis une interface design et moderne :)
+Ce projet utilise les fonctions de l'API d'Harmony Hosting afin de vous permettre de gérer vos serveurs avec une interface design et moderne :)
