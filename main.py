@@ -99,6 +99,7 @@ def showBills():
     bills_parsed = []
     bills_dict = {}
     i = 0
+    #f = open('out.txt', 'a')
     for bill in bills:
         bills_dict.update({bill: api.get("/bills/" + str(bill))})
         i += 1
@@ -113,11 +114,15 @@ def showBills():
         elif bills_dict[bill]["payed_amount"] == bills_dict[bill]["price"]:
             intitule = "Facture payee"
         else:
+            #f.write("https://www.harmony-hosting.com/store/bill/{id_bill}/show\n".format(**{"id_bill": bill}))
             intitule = "Facture"
+
         bills_parsed += [(str(bill), intitule)]
 
     exit_code = d.gauge_stop()
     exit_ = False
+    #f.close()
+
     while not exit_:
         code, tag = d.menu("Liste des factures :", choices=bills_parsed)
         if code != d.OK:

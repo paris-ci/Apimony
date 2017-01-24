@@ -35,13 +35,15 @@ def billInfo(tag, bills_dict):
         Annulee      : {cancelled}
         Expiree      : {expired}
         Transactions : {transactions}
+        URL          : https://www.harmony-hosting.com/store/bill/{id}/show
         """.format(**{
             "date"        : bills_dict[tag]["created_at"],
             "paid"        : bills_dict[tag]["payed_amount"],
             "total"       : bills_dict[tag]["price"],
             "cancelled"   : bills_dict[tag]["cancelled"],
             "expired"     : bills_dict[tag]["expired"],
-            "transactions": transactions
+            "transactions": transactions,
+            "id"          : tag
             }), width=100, height=15, title="Facture " + str(tag))
 
 
